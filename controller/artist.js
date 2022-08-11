@@ -19,10 +19,8 @@ function getArtist(req, res) {
             } else {
                 res.status(200).send({ artist });
             }
-
         }
     })
-
 }
 
 function getArtists(req, res) {
@@ -35,14 +33,10 @@ function getArtists(req, res) {
             if (!artists) {
                 res.status(404).send({ message: 'No hay artistas !!' });
             } else {
-
                 res.status(200).send({ totalItems: total, artists: artists });
             }
-
         }
     });
-
-
 }
 
 function saveArtist(req, res) {
@@ -69,7 +63,6 @@ function saveArtist(req, res) {
 function updateArtist(req, res) {
     var artistId = req.params.id;
     var update = req.body;
-
     Artist.findByIdAndUpdate(artistId, update, (err, artistUpdate) => {
         if (err) {
             res.status(500).send({ message: 'Error al  actualizar el artista' });
