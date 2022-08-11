@@ -5,7 +5,7 @@ var Schema = mongoose.Schema;
 var AlbumSchema = Schema({
     title: String,
     description: String,
-    yerar: Number,
+    year: Number,
     image: String,
     artist: {
         type: Schema.ObjectId,
