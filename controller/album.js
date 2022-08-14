@@ -10,18 +10,17 @@ var mongoosePaginate = require('mongoose-pagination');
 
 function getAlbum(req, res) {
     var albumId = req.params.id;
-    Album.findById(albumId, (err, album) => {
-        if (err) {
-            res.status(500).send({ message: "Metodo getAlbum del contolador artist js" });
-        } else {
-            if (!album) {
-                res.status(404).send({ message: "El Album no existe" });
-            } else {
-                res.status(200).send({ album });
+    Album.findById(albumId).populate({path: 'artist'}).exec((err,album)=>{
+        if(err){
+            res.status(500).send({message:'Error de servidor'});
+        }else{
+            if(!album){
+                res.status(404).send({message:'Error no se encuentra'});                
+            }else{
+                res.status(200).send({album});
             }
-
         }
-    })
+    });
 }
 function saveAlbum(req, res) {
     var album = new Album();
@@ -50,7 +49,7 @@ function updateAlbum(req, res) {
     var update = req.body;
     Album.findByIdAndUpdate(albumId, update, (err, albumUpdate) => {
         if (err) {
-            res.status(500).send({ message: 'Error al  actualizar el Album' });
+            res.status(500).send({ message: 'Error al actualizar el Album' });
         } else {
             if (!albumUpdate) {
                 res.status(404).send({ message: 'El Album no se ha actualizado' });
@@ -62,16 +61,20 @@ function updateAlbum(req, res) {
 }
 
 function getAlbums(req, res) {
-    var page = req.params.page ? req.params.page : 1;
-    var itemsPerPage = 12;
-    Album.find().sort('name').paginate(page, itemsPerPage, function (err, albums, total) {
-        if (err) {
-            res.status(500).send({ message: 'Error en la peticion' });
-        } else {
-            if (!albums) {
-                res.status(404).send({ message: 'No hay Albums !!' });
-            } else {
-                res.status(200).send({ totalItems: total, artists: albums });
+    var artistId = req.params.artist;
+    if(!artistId){
+        var find = Album.find({}).sort('title');
+    }else{
+        var find = Album.find({artist:artistId}).sort('year');
+    }
+    find.populate({path: 'artist'}).exec((err,albums)=>{
+        if(err){
+            res.status(500).send({ message: 'Error en la petición' });
+        }else{
+            if(!albums){
+                res.status(404).send({ message: 'No hay albums' });
+            }else{
+                res.status(500).send({ albums });
             }
         }
     });
