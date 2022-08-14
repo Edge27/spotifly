@@ -117,19 +117,19 @@ function uploadImage(req, res) {
         var ext_split = file_name.split('\.');
         var file_ext = ext_split[1];
         if (file_ext == 'png' || file_ext == 'jpg' || file_ext == 'gif') {
-            Album.findOneAndUpdate(albumID, { image: file_name }, (err, albumUpdate) => {
+            Album.findByIdAndUpdate(albumID, { image: file_name }, (err, albumUpdate) => {
                 if (err) {
                     res.status(500).send({
-                        message: 'Error al actualizar el usuario'
+                        message: 'Error al actualizar la cancion'
                     });
                 } else {
                     if (!albumUpdate) {
                         res.status(404).send({
-                            message: 'No se ha podido actualizar el usuario'
+                            message: 'No se ha podido actualizar la cancion'
                         });
                     } else {
                         res.status(200).send({
-                            user: albumUpdate
+                            album: albumUpdate
                         });
                     }
                 }
